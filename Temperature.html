@@ -1,0 +1,121 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Gauges as Components</title>
+    <script src="gauge.min.js"></script>
+	<script>
+//	var temp = 0;
+	
+	function isWebBluetoothEnabled() {
+		if (navigator.bluetooth) {
+		  return true;
+		} else {
+		  alert('Web Bluetooth API is not available.\n' +
+			  'Please make sure the "Experimental Web Platform features" flag is enabled. (in chrome://flags)');
+		  return false;
+		}
+	}
+	
+	function handleCharacteristicValueChanged(event) {
+	  var value = event.target.value;
+	  console.log('Received ' + value.getUint8(0));
+	  setTemperature(value.getUint8(0));
+	}
+	
+	async function onButtonClick() {
+	  try {
+		console.log('Requesting Bluetooth Device...');
+		const device = await navigator.bluetooth.requestDevice({
+			filters: [{services: ['battery_service']}]});
+
+		console.log('Connecting to GATT Server...');
+		const server = await device.gatt.connect();
+
+		console.log('Getting Battery Service...');
+		const service = await server.getPrimaryService('battery_service');
+
+		console.log('Getting Battery Level Characteristic...');
+		const characteristic = await service.getCharacteristic('battery_level');
+		characteristic.startNotifications();
+		characteristic.addEventListener('characteristicvaluechanged',
+                                  handleCharacteristicValueChanged);
+
+		console.log('Reading Battery Level...');
+		const value = await characteristic.readValue();
+
+		console.log('> Battery Level is ' + value.getUint8(0) + '%');
+	  } catch(error) {
+		console.log('Argh! ' + error);
+	  }
+	}
+	
+	function setTemperature(temperature){
+	var selector = document.getElementById("temperature");
+	selector.setAttribute('data-value',temperature);
+	}
+	
+//    window.setInterval(function(){
+//	  temp=temp+5;
+//	  if (temp>100) temp=0;
+//      setTemperature(temp);
+//	}, 1000);
+    </script>
+</head>
+<body>
+<!-- Injecting radial gauge -->
+<canvas id="temperature"
+		data-type="radial-gauge"
+        data-width="400"
+        data-height="400"
+        data-units="&#8451;"
+        data-title="false"
+        data-value="0"
+        data-min-value="0"
+        data-max-value="100"
+        data-major-ticks="0,10,20,30,40,50,60,70,80,90,100"
+        data-minor-ticks="2"
+        data-stroke-ticks="false"
+        data-highlights='[
+            { "from": 0, "to": 10, "color": "rgba(0,0,255,.3)" },
+            { "from": 10, "to": 40, "color": "rgba(0,255,0,.5)" },
+			{ "from": 40, "to": 70, "color": "rgba(255,255,90,.7)" },
+			{ "from": 70, "to": 90, "color": "rgba(240,100,30,.9)" },
+			{ "from": 90, "to": 100, "color": "rgba(255,0,0,.75)" }
+
+        ]'
+        data-color-plate="#fff"
+        data-color-major-ticks="#666666"
+        data-color-minor-ticks="#666666"
+        data-color-title="#fff"
+        data-color-units="#222"
+        data-color-numbers="#222"
+		data-color-needle="rgba(255, 0, 0, 1)"
+        data-color-needle-start="rgba(242, 55, 55, 1)"
+        data-color-needle-end="rgba(245, 76, 6, .9)"
+		data-color-needle-shadow-up="rgba(203, 61, 0, .5)"
+        data-value-box="true"
+		data-color-value-box-rect="#fff"
+		data-color-value-box-rect-end="#fff"
+		data-color-value-box-background="#fff"
+        data-animation-rule="bounce"
+        data-animation-duration="500"
+        data-font-value="Led"
+        data-animated-value="true"
+></canvas>
+<button>Connect with Bluetooth Device</button>
+
+<script>
+  document.querySelector('button').addEventListener('click', function() {
+    if (isWebBluetoothEnabled()) {
+      console.log("BLE is enabled!");
+      onButtonClick();
+    }
+	else {
+      console.log("BLE is not enabled in this web browser!")
+    }
+  });
+</script>
+
+</body>
+</html>
