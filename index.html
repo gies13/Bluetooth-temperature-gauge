@@ -53,6 +53,7 @@
 	function setTemperature(temperature){
 	var selector = document.getElementById("temperature");
 	selector.setAttribute('data-value',temperature);
+	document.getElementById("insert").innerHTML = "Connected!";
 	}
 	
 //    window.setInterval(function(){
@@ -78,11 +79,11 @@
         data-minor-ticks="2"
         data-stroke-ticks="false"
         data-highlights='[
-            { "from":  0, "to": 5, "color": "rgba(0,0,255,.3)" },
-            { "from":  5, "to": 40, "color": "rgba(0,255,0,.5)" },
-            { "from": 40, "to": 70, "color": "rgba(255,255,90,.7)" },
-            { "from": 70, "to": 90, "color": "rgba(240,100,30,.9)" },
-            { "from": 90, "to": 100, "color": "rgba(255,0,0,.75)" }
+            { "from": 0, "to": 5, "color": "rgba(0,0,255,.3)" },
+            { "from": 5, "to": 40, "color": "rgba(0,255,0,.5)" },
+			{ "from": 40, "to": 70, "color": "rgba(255,255,90,.7)" },
+			{ "from": 70, "to": 90, "color": "rgba(240,100,30,.9)" },
+			{ "from": 90, "to": 100, "color": "rgba(255,0,0,.75)" }
 
         ]'
         data-color-plate="#fff"
@@ -91,23 +92,27 @@
         data-color-title="#fff"
         data-color-units="#222"
         data-color-numbers="#222"
-        data-color-needle="rgba(255, 0, 0, 1)"
+		data-color-needle="rgba(255, 0, 0, 1)"
         data-color-needle-start="rgba(242, 55, 55, 1)"
         data-color-needle-end="rgba(245, 76, 6, .9)"
-        data-color-needle-shadow-up="rgba(203, 61, 0, .5)"
+		data-color-needle-shadow-up="rgba(203, 61, 0, .5)"
         data-value-box="true"
-        data-color-value-box-rect="#fff"
-        data-color-value-box-rect-end="#fff"
-        data-color-value-box-background="#fff"
+		data-color-value-box-rect="#fff"
+		data-color-value-box-rect-end="#fff"
+		data-color-value-box-background="#fff"
         data-animation-rule="bounce"
         data-animation-duration="500"
         data-font-value="Led"
         data-animated-value="true"
 ></canvas>
 </p>
+<p align="center" id="insert">Not connected!
+</p>
 <p align="center">
 <button type="button" style="margin-left:auto">Connect with Bluetooth Device</button>
 </p>
+
+
 
 <script>
   document.querySelector('button').addEventListener('click', function() {
