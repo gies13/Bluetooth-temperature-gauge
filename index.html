@@ -4,73 +4,68 @@
 <head>
     <title>Gauges as Components</title>
     <script src="gauge.min.js"></script>
-	<script src="RGraph.common.core.js"></script>
-	<script src="RGraph.line.js"></script>
-	<script>
-	var temp = 0;
-	
-	function isWebBluetoothEnabled() {
-		if (navigator.bluetooth) {
-		  return true;
-		} else {
-		  alert('Web Bluetooth API is not available.\n' +
-			  'Please make sure the "Experimental Web Platform features" flag is enabled. (in chrome://flags)');
-		  return false;
-		}
-	}
-	
-	function handleCharacteristicValueChanged(event) {
-	  var value = event.target.value;
-	  console.log('Received ' + value.getUint8(0));
-	  setTemperature(value.getUint8(0));
-	  temp = value.getUint8(0);
-	}
-	
-	async function onButtonClick() {
-	  try {
-		console.log('Requesting Bluetooth Device...');
-		const device = await navigator.bluetooth.requestDevice({
-			filters: [{services: ['battery_service']}]});
+    <script src="RGraph.common.core.js"></script>
+    <script src="RGraph.line.js"></script>
+    <script>
+    var temp = 0;
+    
+    function isWebBluetoothEnabled() {
+        if (navigator.bluetooth) {
+          return true;
+        } else {
+          alert('Web Bluetooth API is not available.\n' +
+              'Please make sure the "Experimental Web Platform features" flag is enabled. (in chrome://flags)');
+          return false;
+        }
+    }
+    
+    function handleCharacteristicValueChanged(event) {
+      var value = event.target.value;
+      console.log('Received ' + value.getUint8(0));
+      setTemperature(value.getUint8(0));
+      temp = value.getUint8(0);
+    }
+    
+    async function onButtonClick() {
+      try {
+        console.log('Requesting Bluetooth Device...');
+        const device = await navigator.bluetooth.requestDevice({
+            filters: [{services: ['battery_service']}]});
 
-		console.log('Connecting to GATT Server...');
-		const server = await device.gatt.connect();
+        console.log('Connecting to GATT Server...');
+        const server = await device.gatt.connect();
 
-		console.log('Getting Battery Service...');
-		const service = await server.getPrimaryService('battery_service');
+        console.log('Getting Battery Service...');
+        const service = await server.getPrimaryService('battery_service');
 
-		console.log('Getting Battery Level Characteristic...');
-		const characteristic = await service.getCharacteristic('battery_level');
-		characteristic.startNotifications();
-		characteristic.addEventListener('characteristicvaluechanged',
+        console.log('Getting Battery Level Characteristic...');
+        const characteristic = await service.getCharacteristic('battery_level');
+        characteristic.startNotifications();
+        characteristic.addEventListener('characteristicvaluechanged',
                                   handleCharacteristicValueChanged);
 
-		console.log('Reading Battery Level...');
-		const value = await characteristic.readValue();
+        console.log('Reading Battery Level...');
+        const value = await characteristic.readValue();
 
-		console.log('> Battery Level is ' + value.getUint8(0) + '%');
-	  } catch(error) {
-		console.log('Argh! ' + error);
-	  }
-	}
-	
-	function setTemperature(temperature){
-	var selector = document.getElementById("temperature");
-	selector.setAttribute('data-value',temperature);
-	document.getElementById("insert").innerHTML = "Connected!";
-	}
-	
-//    window.setInterval(function(){
-//	  temp=temp+5;
-//	  if (temp>100) temp=0;
-//      setTemperature(temp);
-//	}, 1000);
+        console.log('> Battery Level is ' + value.getUint8(0) + '%');
+      } catch(error) {
+        console.log('Argh! ' + error);
+      }
+    }
+    
+    function setTemperature(temperature){
+    var selector = document.getElementById("temperature");
+    selector.setAttribute('data-value',temperature);
+    document.getElementById("insert").innerHTML = "Connected!";
+    }
+    
     </script>
 </head>
 <body>
 <p align="center">
 <!-- Injecting radial gauge -->
 <canvas id="temperature"
-		data-type="radial-gauge"
+        data-type="radial-gauge"
         data-width="400"
         data-height="400"
         data-units="&#8451;"
@@ -84,9 +79,9 @@
         data-highlights='[
             { "from": 0, "to": 5, "color": "rgba(0,0,255,.3)" },
             { "from": 5, "to": 40, "color": "rgba(0,255,0,.5)" },
-			{ "from": 40, "to": 70, "color": "rgba(255,255,90,.7)" },
-			{ "from": 70, "to": 90, "color": "rgba(240,100,30,.9)" },
-			{ "from": 90, "to": 100, "color": "rgba(255,0,0,.75)" }
+            { "from": 40, "to": 70, "color": "rgba(255,255,90,.7)" },
+            { "from": 70, "to": 90, "color": "rgba(240,100,30,.9)" },
+            { "from": 90, "to": 100, "color": "rgba(255,0,0,.75)" }
 
         ]'
         data-color-plate="#fff"
@@ -95,14 +90,14 @@
         data-color-title="#fff"
         data-color-units="#222"
         data-color-numbers="#222"
-		data-color-needle="rgba(255, 0, 0, 1)"
+        data-color-needle="rgba(255, 0, 0, 1)"
         data-color-needle-start="rgba(242, 55, 55, 1)"
         data-color-needle-end="rgba(245, 76, 6, .9)"
-		data-color-needle-shadow-up="rgba(203, 61, 0, .5)"
+        data-color-needle-shadow-up="rgba(203, 61, 0, .5)"
         data-value-box="true"
-		data-color-value-box-rect="#fff"
-		data-color-value-box-rect-end="#fff"
-		data-color-value-box-background="#fff"
+        data-color-value-box-rect="#fff"
+        data-color-value-box-rect-end="#fff"
+        data-color-value-box-background="#fff"
         data-animation-rule="bounce"
         data-animation-duration="10"
         data-font-value="Led"
@@ -127,7 +122,7 @@
       console.log("BLE is enabled!");
       onButtonClick();
     }
-	else {
+    else {
       console.log("BLE is not enabled in this web browser!")
     }
   });
@@ -141,7 +136,7 @@
     // *** This is not actually used on this page because     ***
     // *** setTimeout() is not used - requestAnimationFrame() ***
     // *** is used instead which handles the timing for you   ***
-    var delay = 40;
+    //var delay = 40;
     
     // The number of points shown on the chart
     var points = 1200;
@@ -172,11 +167,6 @@
     // The increment/decrement of each iteration
     var delta = 2;
 
-
-
-
-
-
     /**
     * Draw the chart. On subsequent draws this chart is updated with new data and
     * redrawn. This is faster than creating a whole new object and drawing that.
@@ -203,11 +193,6 @@
             xaxis: false
         }
     }).draw();
-
-
-
-
-
 
     
     /**
@@ -251,6 +236,5 @@
 
     draw();
 </script>
-
 </body>
 </html>
