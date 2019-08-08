@@ -15,7 +15,8 @@
         } else {
           alert('Web Bluetooth API is not available.\n' +
               'Please make sure the "Experimental Web Platform features" flag is enabled. (in chrome://flags)');
-          return false;
+          // For now also return true if the browser does not seem to support Bluetooth (should return false in the final product)
+          return true;
         }
     }
     
@@ -82,7 +83,6 @@
             { "from": 40, "to": 70, "color": "rgba(255,255,90,.7)" },
             { "from": 70, "to": 90, "color": "rgba(240,100,30,.9)" },
             { "from": 90, "to": 100, "color": "rgba(255,0,0,.75)" }
-
         ]'
         data-color-plate="#fff"
         data-color-major-ticks="#666666"
@@ -98,7 +98,7 @@
         data-color-value-box-rect="#fff"
         data-color-value-box-rect-end="#fff"
         data-color-value-box-background="#fff"
-        data-animation-rule="bounce"
+        data-animation-rule="linear"
         data-animation-duration="10"
         data-font-value="Led"
         data-animated-value="false"
